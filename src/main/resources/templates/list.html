@@ -38,27 +38,28 @@
 		</div>
 	</nav>
 
-<div class="container">
-	<form action="/create" method="post">
-		<div class="form-group">
-	    	<label for="userId">사용자 아이디</label>
-	    	<input type="text" class="form-control" id="userId" name="userId" placeholder="아이디">
-		<div class="form-group">
-			<label for="password">Password</label>
-			<input type="password" class="form-control" id="password" name="password" placeholder="Password">
-		</div>
-		<div class="form-group">
-	    	<label for="name">사용자 이름</label>
-	    	<input type="text" class="form-control" id="name" name="name" placeholder="이름">
-		</div>
-		<div class="form-group">
-	    	<label for="name">이메일</label>
-	    	<input type="email" class="form-control" id="email" name="email" placeholder="이메일">
-	    	<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-		</div>
-		</div>
-		<button type="submit" class="btn btn-primary">Submit</button>
-	</form>
-</div>
+	<div class="container">
+		<table class="table table-bordered table-hover">
+			<caption>사용자 목록</caption>
+			<thead class="thead-dark">
+				<tr>
+					<th>#</th>
+					<th>사용자 아이디</th>
+					<th>이름</th>
+					<th>이메일</th>
+				</tr>
+			</thead>
+			<tbody>
+			{{#users}}
+				<tr>
+					<th scope="row"></th>
+					<td>{{userId}}</td>
+					<td>{{name}}</td>
+					<td>{{email}}</td>
+				</tr>
+			{{/users}}
+			</tbody>
+		</table>
+	</div>
 </body>
 </html>

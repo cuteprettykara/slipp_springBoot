@@ -1,5 +1,7 @@
 package net.slipp.web;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,19 +59,33 @@ public class UserController {
 		return "redirect:/users";
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
 	@GetMapping("/loginForm")
 	public String loginForm(Model model) {
-		model.addAttribute("users", userRepository.findAll());
 		return "/user/login";
 	}
+	
+	@PostMapping("/login")
+	public String login(String userId, String password, HttpSession session) {
+		User dbUser = userRepository.findByUserId(userId);
+		
+		if (dbUser == null) {
+			System.out.println("Login Failure!");
+			return "redirect:/users/loginForm";
+		}
+		
+		if (!dbUser.matchPassword(password)) {
+			System.out.println("Login Failure!");
+			return "redirect:/users/loginForm";
+		}
+		
+		System.out.println("Login Success!");
+		session.setAttribute("userId", userId);
+		
+		
+		return "redirect:/";
+	}
+	
+	
 	
 	@GetMapping("/profile")
 	public String profile() {

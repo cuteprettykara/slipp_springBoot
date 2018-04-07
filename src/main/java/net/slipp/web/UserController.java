@@ -79,13 +79,17 @@ public class UserController {
 		}
 		
 		System.out.println("Login Success!");
-		session.setAttribute("userId", userId);
+		session.setAttribute("user", dbUser);
 		
 		
 		return "redirect:/";
 	}
 	
-	
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.removeAttribute("user");
+		return "redirect:/";
+	}
 	
 	@GetMapping("/profile")
 	public String profile() {

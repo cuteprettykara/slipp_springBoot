@@ -41,7 +41,7 @@ public class UserController {
 	
 	@GetMapping("/{id}/form")
 	public String updateForm(@PathVariable long id, Model model, HttpSession session) {
-		if (!HttpSessionutils.isLoginUser(session)) return "redirect:/user/loginForm";
+		if (!HttpSessionutils.isLoginUser(session)) return "redirect:/users/loginForm";
 		
 		User sessionUser = HttpSessionutils.getUserFromSession(session);
 		
@@ -54,7 +54,7 @@ public class UserController {
 	
 	@PutMapping("/{id}/update")
 	public String update(@PathVariable long id, User updateUser, HttpSession session) {
-		if (!HttpSessionutils.isLoginUser(session)) return "redirect:/user/loginForm";
+		if (!HttpSessionutils.isLoginUser(session)) return "redirect:/users/loginForm";
 		
 		User sessionUser = HttpSessionutils.getUserFromSession(session);
 		

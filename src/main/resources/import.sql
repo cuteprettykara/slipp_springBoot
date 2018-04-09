@@ -1,1 +1,2 @@
 insert into USER(user_id, password, name, email) values('prettykara', '1111', '남상범', 'cuteprettykara@gmail.com');
+insert into USER(user_id, password, name, email) values('prettykara2', '2222', '남상범2', 'cuteprettykara2@gmail.com');

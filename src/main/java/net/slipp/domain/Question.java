@@ -43,5 +43,23 @@ public class Question {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
 		return this.createDate.format(dateTimeFormatter); 
 	}
+
+	@Override
+	public String toString() {
+		return "Question [id=" + id + ", title=" + title + ", contents=" + contents + ", createDate=" + createDate
+				+ "]";
+	}
+
+		public void update(String title, String contents) {
+		this.title = title;
+		this.contents = contents;
+	}
+	
+/*	public void update(Question updateQuestion) {
+		this.title = updateQuestion.title;
+		this.contents = updateQuestion.contents;
+	}*/
+
 		
+	
 }

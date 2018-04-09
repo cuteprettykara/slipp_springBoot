@@ -60,7 +60,16 @@ public class User {
 	public String toString() {
 		return "User [userId=" + userId + ", name=" + name + ", email=" + email + "]";
 	}
+	
 	public boolean matchPassword(String password) {
+		if (password == null) return false;
+		
 		return this.password.equals(password);
+	}
+
+	public boolean matchId(Long id) {
+		if (id == null) return false;
+		
+		return this.id == id;
 	}
 }

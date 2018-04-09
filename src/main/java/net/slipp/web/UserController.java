@@ -41,29 +41,24 @@ public class UserController {
 	
 	@GetMapping("/{id}/form")
 	public String updateForm(@PathVariable long id, Model model, HttpSession session) {
-		Object tempUser = session.getAttribute("sessionUser");
-		if (tempUser == null) return "redirect:/user/loginForm";
+		if (!HttpSessionutils.isLoginUser(session)) return "redirect:/user/loginForm";
 		
-		User sessionUser = (User)tempUser;
-		if (id != sessionUser.getId()) {
-			throw new IllegalStateException("You can't update other user.");
-		}
+		User sessionUser = HttpSessionutils.getUserFromSession(session);
+		
+		if (!sessionUser.matchId(id)) throw new IllegalStateException("You can't update other user.");
 
 		User user = userRepository.findById(id).get();
-		
 		model.addAttribute("user", user);
 		return "/user/updateForm";
 	}
 	
 	@PutMapping("/{id}/update")
 	public String update(@PathVariable long id, User updateUser, HttpSession session) {
-		Object tempUser = session.getAttribute("sessionUser");
-		if (tempUser == null) return "redirect:/user/loginForm";
+		if (!HttpSessionutils.isLoginUser(session)) return "redirect:/user/loginForm";
 		
-		User sessionUser = (User)tempUser;
-		if (id != sessionUser.getId()) {
-			throw new IllegalStateException("You can't update other user.");
-		}
+		User sessionUser = HttpSessionutils.getUserFromSession(session);
+		
+		if (!sessionUser.matchId(id)) throw new IllegalStateException("You can't update other user.");
 		
 		User dbUser = userRepository.findById(id).get();
 		dbUser.update(updateUser);
@@ -92,7 +87,7 @@ public class UserController {
 		}
 		
 		System.out.println("Login Success!");
-		session.setAttribute("sessionUser", dbUser);
+		session.setAttribute(HttpSessionutils.USER_SESSION_KEY, dbUser);
 		
 		
 		return "redirect:/";
@@ -100,7 +95,7 @@ public class UserController {
 	
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		session.removeAttribute("sessionUser");
+		session.removeAttribute(HttpSessionutils.USER_SESSION_KEY);
 		return "redirect:/";
 	}
 	

@@ -31,6 +31,10 @@ public class Answer {
 	@JsonProperty
 	private Question question;
 	
+	public Question getQuestion() {
+		return question;
+	}
+
 	@Lob
 	@JsonProperty
 	private String contents;

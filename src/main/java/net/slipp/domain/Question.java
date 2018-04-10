@@ -41,6 +41,9 @@ public class Question {
 	private String contents;
 	
 	private LocalDateTime createDate;
+	
+	@JsonProperty
+	private Integer countOfAnswer = 0;
 
 	public Question() {
 	}
@@ -73,6 +76,14 @@ public class Question {
 		public boolean isSameWriter(User sessionUser) {
 			
 			return this.writer.equals(sessionUser);
+		}
+
+		public void addAnswerCnt() {
+			++this.countOfAnswer;
+		}
+		
+		public void deleteAnswerCnt() {
+			--this.countOfAnswer;
 		}
 
 /*	public void update(Question updateQuestion) {

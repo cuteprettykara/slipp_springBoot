@@ -35,6 +35,7 @@ public class ApiAnswerController {
 		Question question = questionRepository.findById(questionId).get();
 		
 		Answer answer = new Answer(sessionUser, question, contents);
+		question.addAnswerCnt();
 		System.out.println("Answer : " + answer);
 		return asnwerRepository.save(answer);
 	}
@@ -53,7 +54,8 @@ public class ApiAnswerController {
 		}
 		
 		asnwerRepository.deleteById(answerId);
-		
+		answer.getQuestion().deleteAnswerCnt();
+		questionRepository.save(answer.getQuestion());
 		return Result.ok();
 	}
 }

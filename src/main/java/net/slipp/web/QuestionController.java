@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import net.slipp.domain.AnswerRepository;
 import net.slipp.domain.Question;
 import net.slipp.domain.QuestionRepository;
+import net.slipp.domain.Result;
 import net.slipp.domain.User;
 
 @Controller
@@ -54,30 +55,44 @@ public class QuestionController {
 	
 	@GetMapping("/{id}/form")
 	public String updateForm(@PathVariable Long id, Model model, HttpSession session) {
-		if (!HttpSessionutils.isLoginUser(session)) return "redirect:/users/loginForm";
-		
-		User sessionUser = HttpSessionutils.getUserFromSession(session);
 		Question question = questionRepository.findById(id).get();
+		Result result = valid(session, question);
 		
-		if (!question.isSameWriter(sessionUser)) return "redirect:/users/loginForm";
+		if (!result.isValid()) {
+			model.addAttribute("errorMessage", result.getErrorMessage());
+			return "/user/login";
+		}
 		
 		model.addAttribute("question", question);
 		return "/qna/updateForm";
 	}
 	
-	@PutMapping("/{id}")
-	public String update(@PathVariable Long id, String title, String contents, HttpSession session) {
-		if (!HttpSessionutils.isLoginUser(session)) return "redirect:/users/loginForm";
+	private Result valid(HttpSession session, Question question) {
+		if (!HttpSessionutils.isLoginUser(session)) {
+			return Result.fail("로그인이 필요합니다.");
+		}
 		
 		User sessionUser = HttpSessionutils.getUserFromSession(session);
+		
+		if (!question.isSameWriter(sessionUser)) {
+			return Result.fail("자신이 쓴 글만  수정, 삭제가 가능합니다.");
+		}
+		
+		return Result.ok();
+	}
+	
+	@PutMapping("/{id}")
+	public String update(@PathVariable Long id, String title, String contents,  Model model, HttpSession session) {
 		Question question = questionRepository.findById(id).get();
+		Result result = valid(session, question);
 		
-		if (!question.isSameWriter(sessionUser)) return "redirect:/users/loginForm";
+		if (!result.isValid()) {
+			model.addAttribute("errorMessage", result.getErrorMessage());
+			return "/user/login";
+		}
 		
-		Question dbQuestion = questionRepository.findById(id).get();
-		dbQuestion.update(title, contents);
-		questionRepository.save(dbQuestion);
-		
+		question.update(title, contents);
+		questionRepository.save(question);
 		return String.format("redirect:/questions/%d", id);
 	}
 	
@@ -95,13 +110,14 @@ public class QuestionController {
 	}*/
 	
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable Long id, String title, String contents, HttpSession session) {
-		if (!HttpSessionutils.isLoginUser(session)) return "redirect:/users/loginForm";
-		
-		User sessionUser = HttpSessionutils.getUserFromSession(session);
+	public String delete(@PathVariable Long id, String title, String contents,  Model model, HttpSession session) {
 		Question question = questionRepository.findById(id).get();
+		Result result = valid(session, question);
 		
-		if (!question.isSameWriter(sessionUser)) return "redirect:/users/loginForm";
+		if (!result.isValid()) {
+			model.addAttribute("errorMessage", result.getErrorMessage());
+			return "/user/login";
+		}
 		
 		questionRepository.deleteById(id);
 		return "redirect:/";

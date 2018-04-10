@@ -1,14 +1,9 @@
 package net.slipp.domain;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -18,11 +13,7 @@ import javax.persistence.OrderBy;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-public class Question {
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@JsonProperty
-	private Long id;
+public class Question extends AbstractEntity {
 	
 	@ManyToOne
 	@JoinColumn(foreignKey=@ForeignKey(name="fk_question_writer"))
@@ -40,8 +31,6 @@ public class Question {
 	@JsonProperty
 	private String contents;
 	
-	private LocalDateTime createDate;
-	
 	@JsonProperty
 	private Integer countOfAnswer = 0;
 
@@ -52,45 +41,29 @@ public class Question {
 		this.writer = writer;
 		this.title = title;
 		this.contents = contents;
-		this.createDate = LocalDateTime.now();
-	}
-	
-	public String getFormattedCreateDate() {
-		if (createDate == null) return "";
-		
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
-		return this.createDate.format(dateTimeFormatter); 
 	}
 
-	@Override
-	public String toString() {
-		return "Question [id=" + id + ", title=" + title + ", contents=" + contents + ", createDate=" + createDate
-				+ "]";
-	}
-
-		public void update(String title, String contents) {
+	public void update(String title, String contents) {
 		this.title = title;
 		this.contents = contents;
 	}
-
-		public boolean isSameWriter(User sessionUser) {
-			
-			return this.writer.equals(sessionUser);
-		}
-
-		public void addAnswerCnt() {
-			++this.countOfAnswer;
-		}
-		
-		public void deleteAnswerCnt() {
-			--this.countOfAnswer;
-		}
-
-/*	public void update(Question updateQuestion) {
-		this.title = updateQuestion.title;
-		this.contents = updateQuestion.contents;
-	}*/
-
-		
 	
+	public boolean isSameWriter(User sessionUser) {
+		
+		return this.writer.equals(sessionUser);
+	}
+	
+	public void addAnswerCnt() {
+		++this.countOfAnswer;
+	}
+	
+	public void deleteAnswerCnt() {
+		--this.countOfAnswer;
+	}
+	
+	@Override
+	public String toString() {
+		return "Question [id=" + getId() + ", title=" + title + ", contents=" + contents + "]";
+	}
+
 }
